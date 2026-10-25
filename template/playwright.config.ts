@@ -6,7 +6,7 @@ import config from "./game.config.json" with { type: "json" };
 // already-installed Chromium instead of `npx playwright install chromium`.
 const PORT = 4173;
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
-const DESKTOP_ONLY = /(pixels|offline)\.spec\.ts/;
+const DESKTOP_ONLY = /pixels\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./tests/e2e",

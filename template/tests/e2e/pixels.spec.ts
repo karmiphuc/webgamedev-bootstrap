@@ -10,7 +10,7 @@ test("pixel rules: no smoothing, integer scale, backing size matches CSS size", 
   if (d.renderer !== "canvas") test.skip(true, `pixel checks target the canvas renderer (got ${d.renderer})`);
   expect(d.smoothing).toBe(false);
   expect(Number.isInteger(d.scale)).toBe(true);
-  const css = await page.locator(".stage-canvas").evaluate((c: HTMLCanvasElement) => ({
+  const css = await page.getByTestId("game-view").evaluate((c: HTMLCanvasElement) => ({
     w: c.getBoundingClientRect().width * devicePixelRatio,
     h: c.getBoundingClientRect().height * devicePixelRatio,
     bw: c.width,
@@ -28,5 +28,5 @@ test("golden frame: seed TESTAA after 300 ticks", async ({ page }) => {
   await api(page, "g.step(300); g.render();");
   // Update deliberately with: npx playwright test pixels --update-snapshots
   // then LOOK at the new image before committing it.
-  await expect(page.locator(".stage-canvas")).toHaveScreenshot("arena-t300.png", { maxDiffPixels: 0 });
+  await expect(page.getByTestId("game-view")).toHaveScreenshot("arena-t300.png", { maxDiffPixels: 0 });
 });

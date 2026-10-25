@@ -1,0 +1,90 @@
+{
+  "$comment": "LOCKED. Classifies every file for bootstrap sync and the PR gate. See docs/CHARTER.md. Globs: ** = any depth, * = within one folder.",
+  "locked": [
+    "bootstrap.manifest.json",
+    "docs/CHARTER.md",
+    "tests/locked/**",
+    "tests/e2e/locked.spec.ts",
+    "tests/e2e/helpers.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tools/check.mjs",
+    "tools/pr-gate.mjs",
+    "tools/glob.mjs",
+    ".githooks/**",
+    ".github/workflows/ci.yml"
+  ],
+  "kernel": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "src/core/**",
+    "src/app/offline.ts",
+    "src/render/types.ts",
+    "tools/**",
+    "docs/TESTING.md",
+    "docs/ASSETS.md",
+    "docs/evidence/README.md",
+    "docs/decisions/TEMPLATE.md",
+    ".claude/skills/**",
+    ".github/pull_request_template.md",
+    ".github/ISSUE_TEMPLATE/**",
+    "tsconfig.json",
+    ".editorconfig",
+    ".nvmrc"
+  ],
+  "guarded": [
+    "tests/fixtures/schema-signature.json"
+  ],
+  "appendOnly": [
+    "tests/fixtures/schema*-*.json"
+  ],
+  "kernelPackage": {
+    "scripts": [
+      "build",
+      "preview",
+      "typecheck",
+      "test",
+      "test:e2e",
+      "check",
+      "check:full",
+      "soak",
+      "schema:accept",
+      "evidence",
+      "assets",
+      "pr-gate",
+      "prepare"
+    ],
+    "devDependencies": [
+      "@playwright/test",
+      "@types/node",
+      "typescript",
+      "vite",
+      "vitest"
+    ]
+  },
+  "visual": [
+    "src/render/**",
+    "src/ui/**",
+    "src/style.css",
+    "index.html",
+    "public/assets/**",
+    "tests/e2e/__screenshots__/**"
+  ],
+  "defaults": {
+    "files": [
+      "vite.config.ts"
+    ],
+    "gameConfigKeys": [
+      "renderer",
+      "assetPolicy",
+      "pixelArt",
+      "budgets"
+    ],
+    "packageKeys": [
+      "dependencies",
+      "devDependencies",
+      "engines"
+    ]
+  },
+  "ownerLabel": "owner-approved"
+}

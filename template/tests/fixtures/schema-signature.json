@@ -1,0 +1,44 @@
+{
+  "schema": 2,
+  "signature": {
+    "enemies": {
+      "[]": [
+        {
+          "cd": "number",
+          "facing": "number",
+          "hp": "number",
+          "id": "number",
+          "kind": "string",
+          "tx": "null",
+          "ty": "null",
+          "x": "number",
+          "y": "number"
+        }
+      ]
+    },
+    "gold": "number",
+    "hero": {
+      "cd": "number",
+      "facing": "number",
+      "hp": "number",
+      "id": "number",
+      "kind": "string",
+      "tx": "number",
+      "ty": "number",
+      "x": "number",
+      "y": "number"
+    },
+    "kills": "number",
+    "log": {
+      "[]": []
+    },
+    "nextId": "number",
+    "phase": "string",
+    "rng": {
+      "seed": "number"
+    },
+    "schema": "number",
+    "tick": "number",
+    "worldCode": "string"
+  }
+}
