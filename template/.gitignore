@@ -1,0 +1,9 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+# Large source packs, .blend files, reference captures: keep OUTSIDE git.
+assets-src/
+reference/

@@ -1,0 +1,85 @@
+name: Verify and deploy
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Check, soak and browser tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      deploy: ${{ steps.policy.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Fast gate (types, tests, assets, build)
+        run: npm run check
+      - name: Soak with budgets
+        run: npm run soak
+      - run: npx playwright install --with-deps chromium
+      - name: Browser tests against the built artifact
+        run: npx playwright test
+      - name: Keep browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Asset policy allows public deploy?
+        id: policy
+        run: |
+          policy=$(node -p "require('./game.config.json').assetPolicy")
+          case "$policy" in
+            public-permissive|public-sharealike) echo "deploy=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "deploy=false" >> "$GITHUB_OUTPUT"; echo "::notice::assetPolicy=$policy: public deployment disabled" ;;
+          esac
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && steps.policy.outputs.deploy == 'true'
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.verify.outputs.deploy == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify the live release matches this commit
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}release.json"
+          for i in 1 2 3 4 5 6; do
+            commit=$(curl -fsS "$url" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).commit))" || true)
+            [ "$commit" = "$GITHUB_SHA" ] && { echo "live release is $commit"; exit 0; }
+            sleep 10
+          done
+          echo "::error::live release.json does not report $GITHUB_SHA"; exit 1

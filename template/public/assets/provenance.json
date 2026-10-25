@@ -1,0 +1,19 @@
+{
+  "$comment": "One entry per source pack. Every runtime file under public/assets must be listed in exactly one pack. Run `npm run assets -- hash` after changing files, `npm run assets -- credits` to regenerate CREDITS.md. See docs/ASSETS.md.",
+  "packs": [
+    {
+      "id": "starter-placeholders",
+      "title": "Starter placeholder sprites",
+      "author": "Project authors",
+      "source": "tools/make-placeholders.mjs",
+      "license": "project-original",
+      "attribution": "",
+      "modifications": "Hand-authored 16x16 ASCII pixel grids encoded by the tool.",
+      "placeholder": true,
+      "files": {
+        "sprites/atlas.json": "1a1f734de61d6f826d5548e00356a46684bf4b26b70bfe135ec4c3fbe3cecf94",
+        "sprites/atlas.png": "612d68b1664a368cf0b94bead246b28314d068f80a0769af5d5e039e461563c0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Bootstrap Arena",
+  "slug": "bootstrap-arena",
+  "reference": {
+    "game": "",
+    "targetBuild": "",
+    "notes": "Fill docs/GAME_BRIEF.md and docs/FIDELITY.md before building features."
+  },
+  "renderer": "canvas",
+  "assetPolicy": "public-permissive",
+  "pixelArt": {
+    "enabled": true,
+    "tileSize": 16,
+    "maxColorsPerSprite": 32
+  },
+  "budgets": {
+    "stepMicros": 500,
+    "saveBytes": 524288,
+    "assetBytes": 20971520,
+    "audioFileBytes": 1048576
+  }
+}

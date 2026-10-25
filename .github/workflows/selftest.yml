@@ -1,0 +1,21 @@
+name: Bootstrap selftest
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  selftest:
+    name: Generate every preset and run its full gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Chromium for Playwright 1.63.0
+        run: npx -y playwright@1.63.0 install --with-deps chromium
+      - run: node scripts/selftest.mjs

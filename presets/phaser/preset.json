@@ -1,0 +1,7 @@
+{
+  "name": "phaser",
+  "description": "Phaser 3 (WebGL/Canvas) 2D renderer: scenes, tweens, particles, cameras. Good for side-view and top-down pixel games that want engine features.",
+  "dependencies": { "phaser": "3.90.0" },
+  "devDependencies": {},
+  "rendererModule": "./phaser"
+}
