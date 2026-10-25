@@ -1,0 +1,29 @@
+{
+  "game": "bootstrap-arena",
+  "schema": 1,
+  "savedAt": 0,
+  "state": {
+    "schema": 1,
+    "rng": {
+      "seed": -1196258425
+    },
+    "worldCode": "KAAAAA",
+    "tick": 0,
+    "nextId": 2,
+    "phase": "play",
+    "hero": {
+      "id": 1,
+      "kind": "hero",
+      "x": 10,
+      "y": 6,
+      "hp": 60,
+      "cd": 0,
+      "tx": null,
+      "ty": null,
+      "facing": 1
+    },
+    "enemies": [],
+    "gold": 0,
+    "log": []
+  }
+}

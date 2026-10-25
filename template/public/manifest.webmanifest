@@ -1,0 +1,8 @@
+{
+  "name": "Bootstrap Arena",
+  "short_name": "Bootstrap Arena",
+  "start_url": "./",
+  "display": "fullscreen",
+  "background_color": "#12101a",
+  "theme_color": "#12101a"
+}

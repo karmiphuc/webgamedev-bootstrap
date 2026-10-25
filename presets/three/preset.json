@@ -1,0 +1,7 @@
+{
+  "name": "three",
+  "description": "three.js 3D renderer: angled perspective camera over a ground plane with billboarded sprites. Starting point for MOBA / ARPG / isometric-3D clones.",
+  "dependencies": { "three": "0.180.0" },
+  "devDependencies": { "@types/three": "0.180.0" },
+  "rendererModule": "./three"
+}

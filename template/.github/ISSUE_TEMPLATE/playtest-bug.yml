@@ -1,0 +1,28 @@
+name: Playtest bug
+description: Something wrong in the playable build.
+title: "[Playtest] "
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      description: Steps to reproduce. Include the World code from the HUD and roughly when it happened.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Browser and device
+      placeholder: Safari on iPad, Chrome on Windows…
+    validations:
+      required: true
+  - type: dropdown
+    id: fresh
+    attributes:
+      label: Does it happen in a new game (?new)?
+      options: [Not checked, "Yes", "No"]
+  - type: textarea
+    id: save
+    attributes:
+      label: Exported save (optional)
+      description: Menu → Export save, then attach the file.
