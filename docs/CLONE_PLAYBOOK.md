@@ -8,10 +8,10 @@
    removed grind, shorter matches, offline bots).
 3. **Pick renderer and asset policy** (see [VISUAL_GUIDE.md](VISUAL_GUIDE.md) §2 and
    [ASSET_SOURCING.md](ASSET_SOURCING.md)). Public repo → `public-permissive` unless you accept share-alike.
-4. Generate:
+4. Create an empty GitHub repo for the game, then inside it (see the bootstrap's AGENTS.md §A):
    ```sh
-   node create.mjs ../<slug> --name "<Name>" --renderer <canvas|phaser|three> \
-     --policy <policy> --reference "<Game, build>" --git
+   node ../webgamedev-bootstrap/bootstrap.mjs . --renderer <canvas|phaser|three> \
+     --policy <policy> --reference "<Game, build>"
    ```
 
 ## Phase 1: Recon (per system, before code)
@@ -27,12 +27,12 @@ Use the **clone-recon** skill inside the game. Output goes to `docs/FIDELITY.md`
 
 Make the single most-repeated action feel right with placeholder art: movement + basic attack
 for action games, placing a building for builders, issuing an order for tactics/crew games.
-Tests: rule tests for the verb; determinism already covered by the template.
+Tests: rule tests for the verb in `tests/sim/`; determinism, saves and soak are covered by the locked tests via `src/sim/testkit.ts`.
 
 ## Phase 3: Close the loop (rung 2)
 
 Start → goal → win/lose → restart, even if tiny. Add a **bot** that plays the loop headlessly
-(extend `tests/sim/helpers.ts` scripts or write a `tests/sim/bot.test.ts`). The bot becomes the
+(make `play()` in `src/sim/testkit.ts` a real bot). The bot becomes the
 balance and soak driver: every new player action gets a line in the bot.
 
 ## Phase 4: Look (in parallel from rung 2)

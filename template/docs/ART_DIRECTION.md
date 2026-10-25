@@ -40,7 +40,8 @@ gold; the player is the only blue")._
 | Per-frame colour count ≤ `pixelArt.maxColorsPerSprite` | `npm run assets` (warning) |
 | Sprite sizes on the `pixelArt.tileSize` grid | `npm run assets` (warning) |
 | A known scene renders pixel-identically | golden image in `tests/e2e/__screenshots__` |
-| Game view fits desktop, tablet and phone with no horizontal scroll | `tests/e2e/smoke.spec.ts` |
+| Game view fits desktop, tablet and phone with no horizontal scroll | `tests/e2e/locked.spec.ts` |
+| Every visual change ships with a reviewed evidence record | `npm run pr-gate` / CI |
 
 ## 4. Style gate (before importing ANY new art)
 

@@ -60,4 +60,4 @@ advance needs. Traps: renderer-owned positions; unbounded task queues; scene res
 | Spatial hash | `src/sim/spatial.ts` | only after a measured scan bottleneck |
 | Ability/effect interpreter | `src/sim/effects.ts` + `src/content/abilities.ts` | effects are data; validator checks every effect key is implemented |
 | Utility AI | `src/sim/ai.ts` | decisions at a fixed lower rate (e.g. 4 Hz), seeded tie-breaks |
-| Bot player | `tests/sim/bot.ts` | uses only public `Command`s, like a player |
+| Bot player | `play()` in `src/sim/testkit.ts` | uses only public `Command`s, like a player; drives the locked determinism and soak tests |

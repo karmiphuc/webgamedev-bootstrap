@@ -1,7 +1,9 @@
 # Visual evidence
 
 Automated tests prove behaviour; they cannot tell you whether the game *looks* right.
-For every visual change:
+This is a LOCKED rule: the PR gate fails any PR that touches visual files (see `visual` in
+`bootstrap.manifest.json`) unless the same PR adds or updates `docs/evidence/<version>/REVIEW.md`
+with at least one linked image that exists and a filled `## Verdict`. For every visual change:
 
 1. `npm run evidence` → captures every scene in `tests/e2e/evidence.spec.ts` on desktop,
    tablet and phone into `docs/evidence/v<version>/`.
@@ -19,6 +21,8 @@ Date · build commit · reviewer (human / agent)
 ## Compared against
 Approved baseline vX.Y · reference capture (kept privately in reference/)
 
+![start, desktop](start-desktop.png) ![start, phone](start-phone.png)
+
 ## Findings
 1. P1/P2/P3 — <what is wrong or improved>, <where>, <evidence file>
 2. …
@@ -31,7 +35,8 @@ Approved baseline vX.Y · reference capture (kept privately in reference/)
 - [ ] HUD clear of the action on all viewports
 
 ## Verdict
-Accept / accept with follow-ups (#issues) / reject
+
+Accept / accept with follow-ups (#issues) / reject — one line, on the line after the heading
 ```
 
 Known template finding (v0.1.0): on a portrait phone the landscape playfield uses about

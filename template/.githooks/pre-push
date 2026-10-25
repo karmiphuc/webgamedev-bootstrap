@@ -1,0 +1,21 @@
+#!/bin/sh
+# LOCKED (see docs/CHARTER.md). Installed by `npm install` / `npm ci`
+# (package.json "prepare" sets core.hooksPath=.githooks).
+#  1. Work reaches main only through pull requests: pushing to main/master
+#     is refused (except creating the branch in a brand-new empty repo).
+#  2. Every push passes the fast gate (`npm run check`).
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      if [ "$remote_sha" != "$zero" ]; then
+        echo "pre-push: direct pushes to ${remote_ref#refs/heads/} are not allowed. Push a branch and open a pull request (docs/CHARTER.md)." >&2
+        exit 1
+      fi
+      ;;
+  esac
+done
+if [ -f package.json ] && [ -d node_modules ]; then
+  npm run --silent check || { echo "pre-push: \`npm run check\` failed; fix it before pushing." >&2; exit 1; }
+fi
+exit 0

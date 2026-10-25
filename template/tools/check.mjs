@@ -36,7 +36,7 @@ step("unit + simulation tests", bin("vitest"), ["run"]);
 step("assets: provenance, licenses, pixel rules", process.execPath, ["tools/assets.mjs", "validate"]);
 step("production build + offline worker", "npm", ["run", "build", "--silent"]);
 if (full) {
-  step("soak (30 game-minutes x 3 seeds, budgets)", bin("vitest"), ["run", "tests/sim/soak.test.ts"], { SOAK: "1" });
+  step("soak (30 game-minutes x 3 seeds, budgets)", bin("vitest"), ["run", "tests/locked/soak.test.ts"], { SOAK: "1" });
   step("browser tests against the built artifact", bin("playwright"), ["test"]);
 }
 

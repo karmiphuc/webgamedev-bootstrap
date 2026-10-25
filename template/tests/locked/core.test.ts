@@ -1,3 +1,4 @@
+// LOCKED (see docs/CHARTER.md): kernel behaviour. Changing this file needs the owner-approved label.
 import { describe, expect, it } from "vitest";
 import { hashState, stableStringify } from "../../src/core/hash";
 import { Lifetime, Samples } from "../../src/core/lifetime";

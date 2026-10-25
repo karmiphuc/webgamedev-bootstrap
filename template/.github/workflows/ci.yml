@@ -1,7 +1,9 @@
+# LOCKED (see docs/CHARTER.md).
 name: Verify and deploy
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
   push:
     branches: [main]
   workflow_dispatch:
@@ -13,6 +15,23 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  pr-gate:
+    name: PR gate (locked files, visual review, decisions)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Check this PR against the charter
+        env:
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: node tools/pr-gate.mjs --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}"
+
   verify:
     name: Check, soak and browser tests
     runs-on: ubuntu-24.04

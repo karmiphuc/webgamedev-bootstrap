@@ -18,6 +18,7 @@ export const createRenderer: CreateRenderer = async (host, assets) => {
   const canvas = document.createElement("canvas");
   canvas.className = "stage-canvas";
   canvas.setAttribute("aria-label", "Game view");
+  canvas.dataset.testid = "game-view"; // LOCKED contract: tests find the game view by this
   host.appendChild(canvas);
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) throw new Error("Canvas 2D is not available");

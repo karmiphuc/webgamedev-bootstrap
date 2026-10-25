@@ -29,6 +29,7 @@ export const createRenderer: CreateRenderer = async (host, assets) => {
   gl.setClearColor(0x12101a);
   gl.domElement.className = "stage-canvas";
   gl.domElement.setAttribute("aria-label", "Game view");
+  gl.domElement.dataset.testid = "game-view"; // LOCKED contract: tests find the game view by this
   host.appendChild(gl.domElement);
 
   const scene = new THREE.Scene();

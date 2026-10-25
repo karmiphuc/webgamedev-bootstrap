@@ -31,14 +31,15 @@ same lessons through bugs. This repository turns those lessons into a reusable s
 | A. Shared npm runtime library used by all games | rejected | one release can break every existing game (R11); version drift across personal repos; agents then debug a library they cannot see |
 | B. GitHub "template repository" only | partial | easy to copy, but no renderer choice, no names, no drift tracking |
 | C. Godot / Unity project template with web export | rejected as default | heavier web builds, weaker DOM UI, slower agent iteration; Godot/Unity stores remain asset *sources* |
-| **D. Generator + copied kernel + renderer presets + contracts** | **chosen** | each game owns its code (R11), presets give R7, generated docs and gates give R5/R6/R9, `--diff` ports fixes deliberately |
+| **D. Generator + copied kernel + renderer presets + contracts** | **chosen** | each game owns its code (R11), presets give R7, generated docs and gates give R5/R6/R9, idempotent sync ports fixes safely |
 
 ## 4. Shape of the system
 
 ```
 webgamedev-bootstrap/
-├─ create.mjs            generator: copy template → apply preset → set names/policy → lock → install
-│                        --diff: kernel drift report between a game and the current bootstrap
+├─ AGENTS.md / CLAUDE.md entry point: "pointed here? do this" (new game, existing game, bootstrap work)
+├─ bootstrap.mjs         ONE idempotent command: init in place (no lock) or safe sync (lock present)
+├─ create.mjs            compatibility alias for bootstrap.mjs
 ├─ template/             a complete, runnable, tested game (canvas renderer)
 │  ├─ src/core           KERNEL: rng, fixed loop, save+migrations, lifetime, hash
 │  ├─ src/content        data tables + validator          (game-specific)
@@ -46,7 +47,11 @@ webgamedev-bootstrap/
 │  ├─ src/render         renderer contract + canvas renderer
 │  ├─ src/ui, src/app    HUD/dialogs; boot, input→commands, autosave, offline, debug API
 │  ├─ tools/             KERNEL: check, assets (policy/provenance/pixels/sheets), png, build-sw, serve
-│  ├─ tests/             unit, sim (determinism/rules/saves/soak), e2e (3 viewports, pixels, offline, evidence)
+│  ├─ bootstrap.manifest.json  classifies files: locked / kernel / guarded / appendOnly / game; visual paths; defaults
+│  ├─ docs/CHARTER.md    the locked / defaults / open contract every agent reads first
+│  ├─ src/sim/testkit.ts game-owned adapter the locked tests drive (createGame, advance, play, invariants)
+│  ├─ tests/             locked (determinism, saves + shape guard, soak, kernel), sim (game rules), e2e (locked contract + game specs)
+│  ├─ .githooks/pre-push no direct pushes to main; npm run check before every push
 │  ├─ docs/              brief, fidelity, art direction, assets, testing, architecture, decisions, evidence
 │  ├─ .claude/skills     import-asset, visual-review, clone-recon, add-content
 │  └─ .github/           CI: gate → soak → browser tests → policy-gated Pages deploy → live verify
@@ -87,17 +92,44 @@ Command ──► Sim.step() ──► GameState (plain JSON, seeded RNG inside)
 | Public deploy refused for `private-personal` | keeps adapted or NC art out of public Pages by construction |
 | Copy kernel, don't depend on it | see option A above |
 
-## 6. Lifecycle of a game
+## 6. Tiers, idempotency and sync
 
-1. `node create.mjs ../riftbound --name "Riftbound" --renderer three --reference "Dota 2 / Mobile Legends" --git`
+**Tiers** (template `docs/CHARTER.md`):
+- **Locked** rules are enforced by code, not prose: locked test suites, the save-shape guard, the
+  pre-push hook and the CI PR gate. Changing their files needs the owner's label.
+- **Defaults** change with a decision record, which the gate checks.
+- **Open** choices belong to the agent within the game brief.
+
+**Idempotency.** `bootstrap.mjs` decides by the presence of `bootstrap.lock.json`. Init writes the
+lock with the hash of every synced file and the kernel `package.json` entries. Sync compares
+three hashes per file (game, lock baseline, upstream):
+
+| game vs baseline | upstream vs baseline | action |
+| --- | --- | --- |
+| same | changed | update file, move baseline |
+| changed | same | keep the game's edit |
+| changed | changed | conflict: upstream copy to `.bootstrap/incoming/`, exit 3, `--resolved` after merging |
+| missing | — | locked: conflict; kernel: respect the deletion |
+
+Game-owned files are never synced. Writes happen only when content differs, and the lock is
+written with sorted keys and no timestamps. Running sync twice is therefore a no-op, which the
+self-test asserts with `git status --porcelain`.
+
+**Rigid tests, free game.** Locked tests import only `src/sim/testkit.ts` (game-owned adapter)
+and use only the `window.__game` contract. A game can rewrite every rule, renderer and screen; the
+locked suites still apply unchanged, and they still sync from upstream.
+
+## 7. Lifecycle of a game
+
+1. Empty repo → `node ../webgamedev-bootstrap/bootstrap.mjs . --reference "Dota 2 / Mobile Legends" --renderer three`
 2. Fill `docs/GAME_BRIEF.md` (intent, loop, scope ladder) and run the **clone-recon** skill
    for the first system → `docs/FIDELITY.md`.
 3. Approve a look: style gate + evidence review → `docs/ART_DIRECTION.md` baseline.
 4. Climb the scope ladder; every rung passes `npm run check:full`.
 5. Push to GitHub: CI runs the gate and (policy permitting) deploys and verifies Pages.
-6. Later: `node ../webgamedev-bootstrap/create.mjs --diff .` shows kernel fixes worth porting.
+6. Later: `node ../webgamedev-bootstrap/bootstrap.mjs .` pulls kernel fixes safely (`--check` first to preview).
 
-## 7. Evolving the bootstrap
+## 8. Evolving the bootstrap
 
 - Change the template, run `node scripts/selftest.mjs` (generates canvas/phaser/three games and
   runs each one's full gate, including browser tests).

@@ -1,6 +1,6 @@
 # 0001: Bootstrap stack and boundaries
 
-Date: set by create.mjs on generation · Status: adopted
+Date: the bootstrap date of this game · Status: adopted
 
 ## Context
 Personal browser remakes of existing games, played offline on desktop/iPad/phone, built
@@ -21,7 +21,7 @@ three viewports; human review of captured visual evidence.
   direct control of browser lifecycle; agents iterate faster on plain TS. Their asset stores
   remain good *sources* (see docs/ASSETS.md).
 - Shared npm runtime library across games: one upgrade could break every old game; the
-  kernel is copied instead, with `create.mjs --diff` to port fixes deliberately.
+  kernel is copied instead; `bootstrap.mjs` re-run syncs fixes safely (never touching game-owned files).
 - Full ECS / workers / pooling from day one: adopt only after a measured bottleneck.
 
 ## Consequences

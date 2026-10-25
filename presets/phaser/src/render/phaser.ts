@@ -49,6 +49,7 @@ export const createRenderer: CreateRenderer = async (host, assets) => {
 
   game.canvas.classList.add("stage-canvas");
   game.canvas.setAttribute("aria-label", "Game view");
+  game.canvas.dataset.testid = "game-view"; // LOCKED contract: tests find the game view by this
   const sprites = new Map<number, Phaser.GameObjects.Sprite>();
   const bars = scene.add.graphics().setDepth(10_000);
   const flashes = new Map<number, number>();

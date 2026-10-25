@@ -16,9 +16,12 @@
     "test:e2e": "npm run build && playwright test",
     "check": "node tools/check.mjs",
     "check:full": "node tools/check.mjs --full",
-    "soak": "SOAK=1 vitest run tests/sim/soak.test.ts",
+    "soak": "SOAK=1 vitest run tests/locked/soak.test.ts",
     "evidence": "npm run build && EVIDENCE=1 playwright test tests/e2e/evidence.spec.ts",
-    "assets": "node tools/assets.mjs"
+    "assets": "node tools/assets.mjs",
+    "schema:accept": "ACCEPT_SCHEMA=1 vitest run tests/locked/saves.test.ts",
+    "pr-gate": "node tools/pr-gate.mjs",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

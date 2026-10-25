@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 
 const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
 let commit = "dev";
@@ -24,9 +24,5 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
     assetsInlineLimit: 0,
     sourcemap: true,
-  },
-  test: {
-    include: ["tests/unit/**/*.test.ts", "tests/sim/**/*.test.ts"],
-    environment: "node",
   },
 });

@@ -14,6 +14,7 @@ description: Review how the game looks after any visual, animation, HUD or layou
 5. Compare against the approved baseline in docs/ART_DIRECTION.md and (privately) the reference
    capture. Go through the checklist in docs/ART_DIRECTION.md §7.
 6. Write `docs/evidence/v<version>/REVIEW.md` with numbered findings (P1/P2/P3), the files that
-   show them and a verdict. State what you could not verify (e.g. real-device performance).
+   show them (relative image links) and a filled `## Verdict` line. The PR gate requires this for
+   every PR touching visual files; commit the images you link. State what you could not verify (e.g. real-device performance).
 7. If the golden image changed intentionally: `npx playwright test pixels --update-snapshots`,
    open the new PNG, and say in the review why it changed.

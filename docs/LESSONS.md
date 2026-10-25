@@ -55,7 +55,7 @@ environment's network proxy refused the connection, so nothing here is derived f
 These show the gates working on real defects, not hypothetical ones:
 
 1. **World codes did not round-trip** for half of all seeds (6 chars × 5 bits = 30 bits, seeds were 31-bit). Caught by `core.test.ts`; fixed with `normalizeSeed`.
-2. **Service worker never registered**: boot is async, so `window.load` had already fired. Caught by `offline.spec.ts`.
+2. **Service worker never registered**: boot is async, so `window.load` had already fired. Caught by the offline browser test (now in `tests/e2e/locked.spec.ts`).
 3. **Canvas overflowed the stage** after the HUD was inserted. Spotted while reviewing the golden image; the smoke test was then tightened to fail on it (verified failing on the old code).
 4. **Phaser measured the stage before the HUD existed** (same class). Caught by the tightened smoke test; fixed by creating the renderer after the HUD.
 5. **The three.js camera cropped the field on portrait phones**, so taps missed. Caught by the phone e2e project; the camera now fits the playfield for any aspect ratio.

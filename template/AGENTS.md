@@ -1,18 +1,22 @@
 # Agent guide (read this first)
 
-This is a browser game made from **webgamedev-bootstrap**: a personal,
-offline-capable remake study. It is TypeScript + Vite, with a deterministic
-simulation that has no rendering dependencies, a swappable renderer, and
-data-driven content. Follow this file literally. When in doubt, pick the
-option this file names.
+This is a browser game made from **webgamedev-bootstrap**: a personal, offline-capable
+remake study. TypeScript + Vite, a deterministic simulation with no rendering dependencies,
+a swappable renderer, data-driven content. This file is kernel (shared by every game);
+game-specific notes live in [docs/GAME_NOTES.md](docs/GAME_NOTES.md).
 
-Before changing gameplay or visuals, read:
-[docs/GAME_BRIEF.md](docs/GAME_BRIEF.md) (what we are making),
-[docs/FIDELITY.md](docs/FIDELITY.md) (reference vs. delivered),
-[docs/ART_DIRECTION.md](docs/ART_DIRECTION.md) (the approved look),
-[docs/ASSETS.md](docs/ASSETS.md) (licences and pipeline),
-[docs/TESTING.md](docs/TESTING.md) (what proves what),
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (module boundaries).
+## 0. Session start (every session, in order)
+
+1. Read [docs/CHARTER.md](docs/CHARTER.md): what is **locked**, what is a **default**, what is **open**.
+2. Read [docs/GAME_BRIEF.md](docs/GAME_BRIEF.md) and [docs/GAME_NOTES.md](docs/GAME_NOTES.md).
+   If the brief is still the empty template, fill it from the owner's request first and put
+   it in your first PR (ask only about what you cannot infer).
+3. `npm ci` (installs the pre-push hook), then `npm run check`. Start from green.
+4. Work on a branch. Finish with the definition of done (§4), `npm run pr-gate`, and a pull request.
+
+Then, as needed: [FIDELITY](docs/FIDELITY.md) (reference vs delivered),
+[ART_DIRECTION](docs/ART_DIRECTION.md) (approved look), [ASSETS](docs/ASSETS.md) (licences),
+[TESTING](docs/TESTING.md), [ARCHITECTURE](docs/ARCHITECTURE.md).
 
 ## 1. Commands
 
@@ -24,6 +28,8 @@ Before changing gameplay or visuals, read:
 | Browser tests only | `npm run test:e2e` | builds, then tests the built artifact |
 | Visual evidence for review | `npm run evidence` | screenshots in `docs/evidence/v<version>/` |
 | Asset gate / tools | `npm run assets -- validate \| hash \| add \| credits \| inspect \| sheet` | see docs/ASSETS.md |
+| Before opening a PR | `npm run pr-gate` | `pr-gate passed` (locked files, visual review, decisions) |
+| After a deliberate save-shape change | `npm run schema:accept` | records the new shape (only after a `SCHEMA` bump) |
 
 Chromium is already installed? Set `PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome`.
 Otherwise run `npx playwright install chromium` once.
@@ -39,8 +45,10 @@ src/ui/        DOM HUD, menus, dialogs
 src/app/       boot, input -> commands, autosave, audio, offline, debug API
 public/assets/ runtime assets + provenance.json (licence register)
 tools/         check, assets, build-sw, serve, placeholder art
-tests/unit, tests/sim   Vitest (fast, no browser)
-tests/e2e      Playwright against the BUILT game (desktop, tablet, phone)
+src/sim/testkit.ts  the adapter the LOCKED tests use (keep its exports)
+tests/locked   LOCKED Vitest suites: determinism, saves + shape guard, soak, kernel
+tests/sim      your rule/content tests (Vitest)
+tests/e2e      Playwright against the BUILT game: locked.spec.ts (LOCKED) + your specs
 docs/          brief, fidelity, art direction, assets, testing, decisions, evidence
 ```
 
@@ -54,8 +62,8 @@ docs/          brief, fidelity, art direction, assets, testing, decisions, evide
    (`sim.command()`), applied on the next tick.
 4. **Content is data.** Add rows to `src/content/*.ts`. Change `sim.ts` only for a NEW mechanic.
    Add a validator rule whenever a data mistake slips through.
-5. **Save shape change = migration + fixture.** Bump `SCHEMA`, add `MIGRATIONS[old]`, and commit an
-   exported old save in `tests/fixtures/` first. Never break existing saves.
+5. **Save shape change = migration + fixture.** Bump `SCHEMA`, add `MIGRATIONS[old]`, commit an
+   exported old save in `tests/fixtures/`, then `npm run schema:accept`. The shape guard fails otherwise.
 6. **Everything is bounded.** Every array in state, queue, cache, log and effect list has a cap.
    Every listener, timer, observer and GPU resource is owned by a `Lifetime`.
 7. **Pixel art: integer scale, no smoothing, one style.** Never fractional-scale sprites. Never mix
@@ -76,7 +84,9 @@ docs/          brief, fidelity, art direction, assets, testing, decisions, evide
 - [ ] New mechanic: a focused test in `tests/sim/`, plus the bot script uses it if relevant
 - [ ] New assets: provenance entry, `npm run assets -- hash`, `npm run assets -- credits`, style gate passed
 - [ ] Save shape changed: `SCHEMA` bumped, migration added, old-save fixture committed
-- [ ] Visual change: evidence captured and reviewed (docs/evidence/README.md)
+- [ ] Visual change: evidence captured, looked at, and `docs/evidence/v<version>/REVIEW.md` written (the PR gate requires it)
+- [ ] Default changed (stack, renderer, asset policy, budgets): decision record in `docs/decisions/`
+- [ ] `npm run pr-gate` passes; PR description lists player-visible change, checks, design choices, limits
 - [ ] Docs: FIDELITY row updated; ART_DIRECTION if the look changed; decision record if architecture changed
 
 ## 5. Known traps
